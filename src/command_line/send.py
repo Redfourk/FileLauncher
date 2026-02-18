@@ -8,3 +8,5 @@ s.connect(('0.0.0.0', 5001))
 with open('layout.tcss', 'rb') as f:
     s.sendall(f.read())
 s.close()
+
+# 172.31.11.167
