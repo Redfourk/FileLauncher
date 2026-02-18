@@ -1,19 +1,10 @@
 import socket
 
-def client_program():
-    host = 'SERVER_IP_ADDRESS'
-    port = 12345
+# Connect
+s = socket.socket()
+s.connect(('172.31.11.167', 5001))
 
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((host, port))
-
-    message = input(" -> ")
-    while message.lower().strip() != 'quit':
-        client_socket.send(message.encode())
-        data = client_socket.recv(1024).decode()
-        print(f"Received from server: {data}")
-        message = input(" -> ")
-    client_socket.close()
-
-if __name__ == '__main__':
-    client_program()
+# Read and Send
+with open('my_data.zip', 'rb') as f:
+    s.sendall(f.read())
+s.close()
