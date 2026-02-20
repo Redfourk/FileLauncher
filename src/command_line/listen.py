@@ -2,7 +2,7 @@ import socket
 
 # Setup
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.bind(('0.0.0.0', 5001))
+sock.bind(('10.53.132.1', 5001))
 sock.listen(1)
 print("Waiting for file...")
 

@@ -1,13 +1,26 @@
+DirectoryTree > .directory-tree--cursor {
+    background: $accent;
+    color: white;
+    text-style: bold;
+}
 Screen {
     layout: grid;
-    grid-size: 3;
-    grid-columns: auto 1fr 1fr;
-    grid-rows: 25% 75%;
+    grid-size: 3 2;  /* 3 columns, 2 rows */
+    grid-gutter: 1;
 }
 
 .box {
     height: 100%;
-    border: solid green;
+    width: 100%;
+    border: solid white;
+    content-align: center middle;
+    background: $surface;
+}
+
+/* Make the focus change VERY obvious */
+.box:focus {
+    border: double $accent;
+    background: $boost;
 }
 
 .title {
@@ -20,4 +33,46 @@ Screen {
     text-align: center;
     color: white;
     background: $primary;
+}
+FileOpen {
+    background: $panel;
+    border: thick $primary;
+}
+#file-status:focus {
+    background: $accent;
+    color: $text;
+    text-style: bold italic;
+}
+#error-window {
+    align: center middle;
+    background: #c0c0c0;
+    color: black;
+    /* Use 'tall' instead of 'outset' */
+    border: tall #808080;
+    /* These specific sides create the 3D effect */
+    border-top: tall #ffffff;
+    border-left: tall #ffffff;
+    margin: 4 8;
+}
+
+#error-title {
+    background: #000080; /* Navy Blue Title Bar */
+    color: white;
+    width: 100%;
+    padding: 0 1;
+    text-style: bold;
+}
+
+#error-body {
+    padding: 2;
+    overflow-y: scroll;
+    height: 1fr;
+    color: #000000;
+}
+
+#error-footer {
+    text-align: center;
+    background: #c0c0c0;
+    padding: 1;
+    color: #808080;
 }
