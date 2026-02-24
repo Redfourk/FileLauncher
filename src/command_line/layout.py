@@ -105,10 +105,6 @@ class FileLauncherUtility(App):
 
 
 if __name__ == "__main__":
-    try:
-        app = FileLauncherUtility()
-        app.run()
-    except Exception as e:
-        with open("error_log.txt", "w") as f:
-            f.write(str(e))
+    app = FileLauncherUtility()
+    app.run()
 

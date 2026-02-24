@@ -1,24 +1,26 @@
 import ctypes
 import sys
-import netman
+
 from src.gui.netman import check_adapter_status
 
 if sys.platform.startswith("win"):
     my_app_id = 'Redfourk.FileLauncher.0.1.0.gui'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
 
+import shutil
 import time
-import tkinter
 import tkinter as tk
-from tkinter import ttk, font
-import importlib
-import os
+from tkinter import ttk, font, messagebox, filedialog
 from pathlib import Path
-import src
+from PIL import Image
+
 
 
 root = tk.Tk()
 root.withdraw()
+
+fl = tk.Toplevel(root)
+fl.overrideredirect(True)
 
 
 
@@ -26,32 +28,32 @@ root.withdraw()
 fl = tk.Toplevel(root)
 fl.overrideredirect(True)
 
-
+# All the fixing of app to not work like a TopLevel cuz of the fact it has a custom style
 def show_in_taskbar(window):
-    # This snippet "re-parents" the window to the taskbar handler
     GWL_EXSTYLE = -20
     WS_EX_APPWINDOW = 0x00040000
     WS_EX_TOOLWINDOW = 0x00000080
 
+    # Get the handle of the window itself since it's the root now
     hwnd = ctypes.windll.user32.GetParent(window.winfo_id())
+    if hwnd == 0:  # If it's the root, use its own ID
+        hwnd = window.winfo_id()
+
     style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
     style = style & ~WS_EX_TOOLWINDOW
     style = style | WS_EX_APPWINDOW
     ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style)
-    # Re-map the window to update the taskbar
+
     window.withdraw()
     window.after(10, window.deiconify)
 
 
-# Call it after the window is drawn
 fl.after(100, lambda: show_in_taskbar(fl))
 
 
 def close_app():
-    fl.destroy()
+    root.destroy()
 
-from PIL import Image
-from pathlib import Path
 
 current_dir = Path(__file__).parent.resolve()
 # 1. Define your assets path (adjust based on where you run this)
@@ -113,8 +115,7 @@ title_bar.pack(expand=False, fill="x")
 
 
 
-def close_app():
-    root.destroy()
+
 
 
 close_btn = tk.Button(title_bar, text="r", font=("Marlett", 10),  # 'r' is 'X' in Marlett font
@@ -192,6 +193,7 @@ btn_options_command_line = {
 
 fl.style.configure("Tab", focuscolor=WIN95_GRAY)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TAB CONTENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 tabs = ttk.Notebook(fl, takefocus=False)
 general = tk.Frame(tabs, bg=WIN95_GRAY)
@@ -206,8 +208,10 @@ tabs.add(upload, text=" Upload ")
 tabs.add(more, text=" More... ")
 tabs.pack(expand=1, fill="both", padx=5, pady=5)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# General Tab content:
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~GENERAL TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # General Title
 general_content_title = ttk.Label(general, background=WIN95_GRAY, text="General: ", anchor="w", justify="left", font=WIN95_BOLD_FONT)
@@ -231,13 +235,15 @@ general_content_network_status.pack(pady=5, padx=20, fill="x")
 
 process_name = " "
 
+# PBar Task Label:
 general_content_progress_bar_text = ttk.Label(general, text=process_name, background=WIN95_GRAY, anchor="w", justify="left", font=WIN95_FONT)
 general_content_progress_bar_text.pack(pady=5, padx=20, fill="x")
 
-
+# Visual Bar:
 general_content_progress_bar = ttk.Progressbar(general, orient="horizontal", length=300, mode="determinate")
 general_content_progress_bar.pack(pady=5, padx=10, anchor="w")
 
+# Progress Bar Test Task:
 def start_task():
     general_content_progress_bar['value'] = 0
     process_name = "Test Process:"
@@ -250,7 +256,111 @@ def start_task():
     process_name = " "
     general_content_progress_bar_text.config(text=process_name)
 
+
+# Progress Bar Test Button:
 btn = tk.Button(general, text="Test Pbar", command=start_task)
 btn.pack()
+
+def close_app():
+    fl.destroy()
+    root.destroy()
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NETWORK TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~UPLOAD TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Upload Tab Title:
+upload_content_title = ttk.Label(upload, background=WIN95_GRAY, text="Upload: ", anchor="w", justify="left", font=WIN95_BOLD_FONT)
+upload_content_title.pack(pady=10, padx=20, fill="x")
+
+# Upload Text:
+upload_button_text = ttk.Label(upload, background=WIN95_GRAY, text="Click the button below to upload a file: ", anchor="w", justify="left", font=WIN95_FONT)
+upload_button_text.pack(pady=10, padx=20, fill="x")
+
+# Upload Function:
+
+def show_loading_popup(task):
+    popup = tk.Toplevel(root)
+    popup.overrideredirect(True)  # No modern title bar
+    popup.configure(bg="#c0c0c0", bd=2, relief="raised")
+    w, h = 300, 100
+    x = (popup.winfo_screenwidth() // 2) - (w // 2)
+    y = (popup.winfo_screenheight() // 2) - (h // 2)
+    popup.geometry(f"{w}x{h}+{x}+{y}")
+    fake_title = tk.Frame(popup, bg="#000080", height=20)
+    fake_title.pack(fill="x")
+    tk.Label(fake_title, text=task, bg="#000080", fg="white",
+             font=("MS Sans Serif", 8, "bold")).pack(side="left", padx=5)
+    tk.Label(popup, text="Please wait...", bg="#c0c0c0", font=("MS Sans Serif", 8)).pack(pady=10)
+    progress = ttk.Progressbar(popup, orient="horizontal", length=250, mode="determinate")
+    progress.pack(pady=5)
+    popup.update()
+    return popup, progress
+
+def process_file_with_popup():
+    source_path = filedialog.askopenfilename(parent=fl, title="Select File")
+    if not source_path:
+        return
+    popup, bar = show_loading_popup("File Upload")
+    try:
+        UPLOAD_DIR = Path(__file__).parent.resolve() / "uploads"
+        if UPLOAD_DIR.exists():
+            try:
+                for item in UPLOAD_DIR.iterdir():
+                    if item.is_file():
+                        item.unlink()
+                    elif item.is_dir():
+                        shutil.rmtree(item)
+                print("Uploads folder purged.")
+            except Exception as e:
+                print(f"Cleanup error: {e}")
+        filename = Path(source_path).name
+        dest_path = UPLOAD_DIR / filename
+        for i in range(1, 11):
+            time.sleep(0.1)
+            bar['value'] = i * 10
+            popup.update()
+        shutil.copy2(source_path, dest_path)
+        general_content_file_status.config(text="File Status: Selected")
+        popup.destroy()
+        messagebox.showinfo("Success", f"Stored {filename} in uploads folder.", parent=fl)
+    except Exception as e:
+        popup.destroy()
+        messagebox.showerror("Error", f"Upload failed: {e}", parent=fl)
+
+
+# Upload Button:
+
+upload_button = tk.Button(upload, text="Upload File", command=process_file_with_popup, font=WIN95_FONT, justify="left")
+upload_button.pack(pady=10, padx=10, anchor="w")
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MORE TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
 
 root.mainloop()
