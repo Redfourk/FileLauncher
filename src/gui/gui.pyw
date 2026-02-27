@@ -1,6 +1,8 @@
 import ctypes
 import sys
-from src.gui.netman import check_network_status
+
+from src.gui.netman import check_adapter_status
+
 if sys.platform.startswith("win"):
     my_app_id = 'Redfourk.FileLauncher.0.1.0.gui'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
@@ -224,7 +226,7 @@ general_content_file_status.pack(pady=5, padx=20, fill="x")
 
 # Network Status Text
 
-network_status = check_network_status()
+network_status = check_adapter_status()
 
 general_content_network_status = ttk.Label(general, text="Network Status: " + network_status, background=WIN95_GRAY, anchor="w", justify="left", font=WIN95_FONT)
 general_content_network_status.pack(pady=5, padx=20, fill="x")

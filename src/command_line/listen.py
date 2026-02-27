@@ -1,6 +1,6 @@
 import socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.bind('1.2.3.4')
+sock.bind(('1.2.3.4', 5001))
 sock.listen(1)
 print("Waiting for file...")
 
