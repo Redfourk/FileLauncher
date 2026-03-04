@@ -26,7 +26,7 @@ class FileLauncherUtility(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Static("FileLauncher\nVersion: 0.1.0-test.1", classes="title")
+        yield Static("FileLauncher\nVersion: 0.1.0-test.2", classes="title")
 
         # Box 2: The Status Box (Focusable)
         yield FocusBox("No file selected", classes="box", id="file-status")
