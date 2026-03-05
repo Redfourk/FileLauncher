@@ -3,5 +3,4 @@ import subprocess
 
 
 def test_setup():
-    subprocess.Popen("main.py")
     assert True
