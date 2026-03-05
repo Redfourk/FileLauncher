@@ -42,7 +42,7 @@ class FileLauncherUtility(App):
 
     def action_open_picker(self) -> None:
         # 1. Folder path (Ensure this is a folder, not a file!)
-        target_folder = r"C:\Users\082096\Downloads"
+        target_folder = r"C:\Users\Username\File"
 
         # 2. What happens after selection
         def handle_file_selection(path: Path | None) -> None:
@@ -70,7 +70,7 @@ class FileLauncherUtility(App):
     @work(thread=True)
     def send_file(self, path: Path):
         try:
-            RECEIVER_IP = "127.0.0.1"  # Change this for real transfers!
+            RECEIVER_IP = "8.8.8.8"  # Change this for real transfers!
             PORT = 5001
 
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
