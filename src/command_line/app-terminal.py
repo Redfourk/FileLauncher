@@ -1,1 +1,0 @@
-print("This is the FileLauncher file transfer program. This command line tool can be used to send files to others who have the program installed.")
