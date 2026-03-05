@@ -1,3 +1,7 @@
+# ~~~~~~
+# NOTE: Do NOT execute this script if you have forked this repo, it will REVERT YOUR CHANGES to the latest release!
+# ~~~~~~
+
 import requests
 import zipfile
 import io

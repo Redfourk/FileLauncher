@@ -9,3 +9,4 @@ def check_adapter_status():
             else:
                 return f"{name} is Disconnected/Disabled"
     return "No Wi-Fi adapter found"
+
