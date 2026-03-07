@@ -1,5 +1,6 @@
 import psutil
 
+# Added Ethernet Compatibility. (#2) @3/6/26
 
 def check_adapter_status():
     stats = psutil.net_if_stats()
@@ -12,4 +13,3 @@ def check_adapter_status():
             status = "Enabled/Connected" if info.isup else "Disconnected/Disabled"
             return f"{name} is {status}"
     return "No matching adapter found"
-
