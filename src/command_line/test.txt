@@ -1,1 +1,7 @@
+# ###########################################################################################################
+#       NOTICE: THIS CODE IS DEPRECIATED, ALL CLI INTEGRATIONS ARE IN DEVELOPMENT ON A SEPARATE BRANCH!
+# ###########################################################################################################
+
+
+
 This was sent over the internet!

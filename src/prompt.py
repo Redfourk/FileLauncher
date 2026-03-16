@@ -13,6 +13,8 @@ def main():
     from tkinter import ttk
     base_dir = Path(__file__).parent.resolve()
     icon_path = base_dir / "assets" / "FileLauncher16.ico"
+
+    # GUI Execution code:
     def graphical_button_operation():
         target_script = base_dir / "gui" / "gui.pyw"
         python_exe = sys.executable.lower().replace("python.exe", "pythonw.exe")
@@ -27,26 +29,13 @@ def main():
             prompt.after(100, close_app)
         except Exception:
             subprocess.Popen([sys.executable, str(target_script)])
-    def command_line_button_operation():
-        base_dir = Path(__file__).parent.resolve()
-        target_script = base_dir / "command_line" / "layout.py"
-        cmd_str = f'cmd /c start "" "{sys.executable}" "{target_script}"'
 
-        try:
-            subprocess.Popen(
-                cmd_str,
-                shell=True,
-                cwd=str(base_dir),
-                creationflags=0x00000010,
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                close_fds=True
-            )
-            prompt.after(200, close_app)
-        except Exception as e:
-            from tkinter import messagebox
-            messagebox.showerror("Launch Error", f"Critical Failure:\n{e}")
+    def command_line_button_operation():
+        # Reserved for future CLI integration:
+        print("This feature is not available yet!")
+        # Code will go here:
+
+    # Prompt Tkinter App creation:
     prompt = tk.Tk()
     if icon_path.exists():
         prompt.iconbitmap(str(icon_path))
@@ -71,6 +60,14 @@ def main():
         ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style)
         window.withdraw()
         window.after(10, window.deiconify)
+
+    # Strikethrough Text Effect:
+    def strikethrough(text):
+        result = ''
+        for c in text:
+            result = result + c + '\u0336'
+        return result
+
     prompt.after(100, lambda: show_in_taskbar(prompt))
     TITLE_BLUE, TEXT_WHITE, WIN95_GRAY = "#000080", "#ffffff", "#c0c0c0"
     WIN95_FONT = ("MS Sans Serif", 8)
@@ -96,10 +93,12 @@ def main():
              bg="#c0c0c0").pack()
     btn_opts = {"bg": WIN95_GRAY, "font": WIN95_FONT, "relief": "raised", "borderwidth": 2,
                 "activebackground": "#d9d9d9"}
-    tk.Button(prompt, text="GUI", width=10, command=graphical_button_operation, **btn_opts).pack(side="left", padx=10,
-                                                                                         pady=10)
-    tk.Button(prompt, text="COMMAND LINE", width=15, command=command_line_button_operation, **btn_opts).pack(
-        side="right", padx=10, pady=10)
+
+    # GUI Button:
+    tk.Button(prompt, text="GUI", width=10, command=graphical_button_operation, **btn_opts).pack(side="left", padx=10, pady=10)
+
+    # CLI Button:
+    tk.Button(prompt, text=strikethrough("COMMAND LINE") + " COMING SOON", width=30, command=command_line_button_operation, **btn_opts).pack(side="right", padx=10, pady=10)
 
 
     prompt.mainloop()

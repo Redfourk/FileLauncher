@@ -1,3 +1,9 @@
+# ###########################################################################################################
+#       NOTICE: THIS CODE IS DEPRECIATED, ALL CLI INTEGRATIONS ARE IN DEVELOPMENT ON A SEPARATE BRANCH!
+# ###########################################################################################################
+
+
+
 import socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(('1.2.3.4', 5001))

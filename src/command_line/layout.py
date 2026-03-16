@@ -1,3 +1,9 @@
+# ###########################################################################################################
+#       NOTICE: THIS CODE IS DEPRECIATED, ALL CLI INTEGRATIONS ARE IN DEVELOPMENT ON A SEPARATE BRANCH!
+# ###########################################################################################################
+
+
+
 import os, sys
 from pathlib import Path
 
