@@ -1,8 +1,10 @@
 import ctypes
 import sys
 import os
+import webbrowser
 
 from src.gui.netman import check_adapter_status
+from check_repo import get_latest_version
 
 if sys.platform.startswith("win"):
     my_app_id = 'Redfourk.FileLauncher.0.1.0.gui'
@@ -16,7 +18,7 @@ from pathlib import Path
 from PIL import Image
 
 # Project Versioning:
-project_version = "0.1.0-test.2"
+project_version = "0.1.0-test.1"
 update_status = "You're on the latest version!"
 
 root = tk.Tk()
@@ -365,8 +367,27 @@ more_project_version = ttk.Label(more, background=WIN95_GRAY, text="Current App 
 more_project_version.pack(pady=10, padx=20, fill="x")
 
 # Updates Avaliable:
-more_update_ability = ttk.Label(more, background=WIN95_GRAY, text="Updates Available:   " + update_status, anchor="w", justify="left", font=WIN95_FONT)
+
+repo_version = get_latest_version("Redfourk", "FileLauncher")
+
+if repo_version > project_version:
+    update_status = "There is a new version available. You have " + project_version + " and the \nnewest version is " + repo_version
+elif repo_version == project_version:
+    update_status = "You are on the latest version! (" + project_version + ")"
+
+more_update_ability = ttk.Label(more, background=WIN95_GRAY, text="Updates Status:   " + update_status, anchor="w", justify="left", font=WIN95_BOLD_FONT)
 more_update_ability.pack(pady=10, padx=20, fill="x")
+
+# Repo Link:
+more_repo_link_desc = ttk.Label(more, background=WIN95_GRAY, text="Repo Link: ", anchor="w", justify="left", font=WIN95_FONT)
+more_repo_link_desc.pack(pady=10, padx=20, fill="x")
+
+def open_github():
+    webbrowser.open("https://github.com/Redfourk/FileLauncher")
+more_gh_icon = tk.PhotoImage(file="github_icon.png")
+
+more_link_button = tk.Button(more, image=more_gh_icon, command=open_github, cursor="hand2", borderwidth=0, highlightthickness=0)
+more_link_button.pack(pady=10, padx=20, anchor="w")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
