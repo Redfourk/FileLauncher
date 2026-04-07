@@ -1,5 +1,6 @@
 import ctypes
 import sys
+import os
 
 from src.gui.netman import check_adapter_status
 
@@ -14,7 +15,9 @@ from tkinter import ttk, font, messagebox, filedialog
 from pathlib import Path
 from PIL import Image
 
-
+# Project Versioning:
+project_version = "0.1.0-test.2"
+update_status = "You're on the latest version!"
 
 root = tk.Tk()
 root.withdraw()
@@ -353,14 +356,23 @@ upload_button.pack(pady=10, padx=10, anchor="w")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MORE TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# More.. Content Title:
+more_content_title = ttk.Label(more, background=WIN95_GRAY, text="Additional Options and Info: ", anchor="w", justify="left", font=WIN95_BOLD_FONT)
+more_content_title.pack(pady=10, padx=20, fill="x")
 
+# Project Version:
+more_project_version = ttk.Label(more, background=WIN95_GRAY, text="Current App Version:    " + project_version, anchor="w", justify="left", font=WIN95_FONT)
+more_project_version.pack(pady=10, padx=20, fill="x")
 
-
-
+# Updates Avaliable:
+more_update_ability = ttk.Label(more, background=WIN95_GRAY, text="Updates Available:   " + update_status, anchor="w", justify="left", font=WIN95_FONT)
+more_update_ability.pack(pady=10, padx=20, fill="x")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
-
+#~~~~~~~~~~~~~~~~~~~~GitHub Actions Verification~~~~~~~~~~~~~~~
+if os.getenv("GITHUB_ACTIONS") == "true":
+    print("CI detected: GUI loaded successfully. Exiting.")
+    sys.exit(0)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 root.mainloop()

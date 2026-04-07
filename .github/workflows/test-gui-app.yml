@@ -1,0 +1,41 @@
+name: Windows GUI Test
+
+on: [push]
+
+jobs:
+  test-gui:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        working-directory: ./src
+        run: |
+          # If you have a requirements file in src/
+          if (Test-Path requirements.txt) { pip install -r requirements.txt }
+
+      - name: Launch App Chain
+        shell: powershell
+        working-directory: ./src
+        run: |
+          # 1. Start main.py in the background
+          $process = Start-Process python -ArgumentList "main.py" -PassThru
+          
+          # 2. Wait 15 seconds to give the chain (prompt -> gui) time to load
+          Start-Sleep -Seconds 15
+          
+          # 3. Check if the process crashed immediately
+          if ($process.HasExited) {
+            Write-Error "App crashed on startup!"
+            exit 1
+          }
+          
+          # 4. Cleanup: Kill the process so the runner finishes
+          Stop-Process -Id $process.Id -Force
+          echo "GUI loaded and verified successfully."
