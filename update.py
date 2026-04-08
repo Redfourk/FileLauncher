@@ -1,6 +1,7 @@
 # ~~~~~~
 # NOTE: Do NOT execute this script if you have forked this repo, it will REVERT YOUR CHANGES to the latest release!
 # ~~~~~~
+import multiprocessing
 
 import requests
 import zipfile
@@ -57,5 +58,6 @@ def update_project():
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
     update_project()
 

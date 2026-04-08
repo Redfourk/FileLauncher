@@ -1,3 +1,4 @@
+import multiprocessing
 import os
 import subprocess
 import sys
@@ -22,5 +23,6 @@ def launch():
         subprocess.Popen([sys.executable, str(target_script)])
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
     launch()
     sys.exit()

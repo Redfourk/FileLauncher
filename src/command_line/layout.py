@@ -1,9 +1,7 @@
 # ###########################################################################################################
 #       NOTICE: THIS CODE IS DEPRECIATED, ALL CLI INTEGRATIONS ARE IN DEVELOPMENT ON A SEPARATE BRANCH!
 # ###########################################################################################################
-
-
-
+import multiprocessing
 import os, sys
 from pathlib import Path
 
@@ -111,6 +109,7 @@ class FileLauncherUtility(App):
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
     app = FileLauncherUtility()
     app.run()
 
