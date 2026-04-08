@@ -10,3 +10,6 @@ ERROR_CODES =  {
 
 def get_err(code):
     return f"Error {code}: {ERROR_CODES.get(str(code), 'Unknown')}"
+
+
+
