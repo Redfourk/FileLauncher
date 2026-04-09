@@ -1,5 +1,5 @@
 src/gui/client_secret.json
-token.json
+src/gui/token.json
 whitelist.txt
 __pycache__/
 *.pyc
