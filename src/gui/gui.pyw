@@ -273,6 +273,57 @@ def close_app():
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# User Tab Title
+user_content_title = ttk.Label(user, background=WIN95_GRAY, text="User Profile: ", anchor="w", justify="left", font=WIN95_BOLD_FONT)
+user_content_title.pack(pady=10, padx=20, fill="x")
+
+# Profile Sub-Frame (Sunken look)
+user_profile_box = tk.Frame(user, bg=WIN95_GRAY, relief="sunken", borderwidth=2)
+user_profile_box.pack(pady=10, padx=20, fill="x")
+
+# Profile Picture Placeholder
+user_pfp_canvas = tk.Canvas(user_profile_box, width=80, height=80, bg="#808080", highlightthickness=1, highlightbackground="black")
+user_pfp_canvas.grid(row=0, column=0, padx=10, pady=10)
+user_pfp_canvas.create_text(40, 40, text="?", fill="white", font=("Courier", 24, "bold"))
+
+# Info Area (Right of PFP)
+user_info_frame = tk.Frame(user_profile_box, bg=WIN95_GRAY)
+user_info_frame.grid(row=0, column=1, sticky="nw", pady=10)
+
+user_email_text = tk.Label(user_info_frame, text="Account: Not Signed In", bg=WIN95_GRAY, font=WIN95_FONT)
+user_email_text.pack(anchor="w")
+
+user_status_text = tk.Label(user_info_frame, text="Status: [UNAUTHORIZED]", bg=WIN95_GRAY, fg="red", font=WIN95_FONT)
+user_status_text.pack(anchor="w")
+
+# Auth Button and Function
+
+# Auth Function
+def handle_auth_toggle():
+    user_status_text.config(text="Status: [CONNECTING...]", fg="blue")
+    fl.update()
+    try:
+        # 2. Call your OAuth logic (we'll define this next)
+        creds = run_google_auth()
+
+        if creds:
+            # 3. Get user info
+            from googleapiclient.discovery import build
+            service = build('oauth2', 'v2', credentials=creds)
+            info = service.userinfo().get().execute()
+
+            email = info.get('email')
+            pfp_url = info.get('picture')
+
+            # 4. Update the UI with real data
+            update_user_tab(email, pfp_url)
+            messagebox.showinfo("Success", f"Welcome, {email}!", parent=fl)
+    except Exception as e:
+        user_status_text.config(text="Status: [ERROR]", fg="red")
+        messagebox.showerror("Auth Error", str(e), parent=fl)
+
+user_auth_btn = tk.Button(user, text="Sign in with Google", command=handle_auth_toggle, **btn_options_graphical)
+user_auth_btn.pack(pady=20)
 
 
 
