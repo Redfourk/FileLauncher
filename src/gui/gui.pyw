@@ -2,6 +2,10 @@ import ctypes
 import sys
 import os
 import webbrowser
+import pickle
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+
 
 from src.gui.netman import check_adapter_status
 from check_repo import get_latest_version
@@ -58,6 +62,36 @@ fl.after(100, lambda: show_in_taskbar(fl))
 
 def close_app():
     root.destroy()
+
+# Begin Google Auth
+SCOPES = ['https://www.googleapis.com/auth/userinfo.email', 'openid', 'https://www.googleapis.com/auth/userinfo.profile']
+
+def run_google_auth():
+    creds = None
+    if os.path.exists('token.json'):
+        with open('token.json', 'rb') as token:
+            creds = pickle.load(token)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file('client_secret.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open('token.json', 'wb') as token:
+            pickle.dump(creds, token)
+    return creds
+
+
+
+# Check if the User's account is allowlisted
+def check_whitelist(email):
+    try:
+        with open("whitelist.txt", "r") as f:
+            allowed = [line.strip().lower() for line in f.readlines()]
+        return email.lower() in allowed
+    except FileNotFoundError:
+        print("Security Error: whitelist.txt missing!")
+        return False
 
 
 current_dir = Path(__file__).parent.resolve()
@@ -296,6 +330,14 @@ user_email_text.pack(anchor="w")
 user_status_text = tk.Label(user_info_frame, text="Status: [UNAUTHORIZED]", bg=WIN95_GRAY, fg="red", font=WIN95_FONT)
 user_status_text.pack(anchor="w")
 
+# Update User Tab after Login
+def update_user_tab(email, pfp_url=None):
+    user_email_text.config(text=f"Account: {email}")
+    user_status_text.config(text=f"StatusL [AUTHORIZED]", fg="green")
+    user_auth_btn.config(text="Logout / Disconnect")
+
+    # Future import pfp code
+
 # Auth Button and Function
 
 # Auth Function
@@ -315,7 +357,13 @@ def handle_auth_toggle():
             email = info.get('email')
             pfp_url = info.get('picture')
 
-            # 4. Update the UI with real data
+            if check_whitelist(email):
+                update_user_tab(email, pfp_url)
+                messagebox.showinfo("Access Granted", f"Welcome, {email}!", parent=fl)
+            else:
+                user_status_text.config(text="Status: [DENIED", fg="red")
+                messagebox.showerror("Access Denied", "This account is not authorized to use FileLauncher.", parent=fl)
+
             update_user_tab(email, pfp_url)
             messagebox.showinfo("Success", f"Welcome, {email}!", parent=fl)
     except Exception as e:

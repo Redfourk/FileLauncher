@@ -1,4 +1,4 @@
-client_secret.json
+src/gui/client_secret.json
 token.json
 whitelist.txt
 __pycache__/
