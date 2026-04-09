@@ -5,7 +5,9 @@ import webbrowser
 import pickle
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-
+import requests
+from PIL import Image, ImageTk
+from io import BytesIO
 
 from src.gui.netman import check_adapter_status
 from check_repo import get_latest_version
@@ -333,8 +335,20 @@ user_status_text.pack(anchor="w")
 # Update User Tab after Login
 def update_user_tab(email, pfp_url=None):
     user_email_text.config(text=f"Account: {email}")
-    user_status_text.config(text=f"StatusL [AUTHORIZED]", fg="green")
+    user_status_text.config(text=f"Status [AUTHORIZED]", fg="green")
     user_auth_btn.config(text="Logout / Disconnect")
+    if pfp_url:
+        try:
+            response = requests.get(pfp_url)
+            img_data = response.content
+            img = Image.open(BytesIO(img_data))
+            img = img.resize((80, 80), Image.Resampling.LANCZOS)
+            photo = ImageTk.PhotoImage(img)
+            user_pfp_canvas.delete("all")
+            user_pfp_canvas.create_image(40, 40, image=photo)
+            user_pfp_canvas.image = photo  # Mandatory reference keep-alive
+        except Exception as e:
+            print(f"PFP Error: {e}")
 
     # Future import pfp code
 
