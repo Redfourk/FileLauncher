@@ -393,11 +393,38 @@ user_auth_btn.pack(pady=20)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NETWORK TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# Network Tab Title:
+network_content_title = ttk.Label(network, background=WIN95_GRAY, text="Network and Service Accessibility:", anchor="w", justify="left", font=WIN95_BOLD_FONT)
+network_content_title.pack(pady=10, padx=20, fill="x")
+
+# Service Statuses Indent Box:
+network_service_status_box = tk.Frame(network, bg=WIN95_GRAY, relief="sunken", borderwidth=2)
+network_service_status_box.pack(pady=10, padx=20, fill="x")
+
+network_service_status_box_frame = tk.Frame(network_service_status_box, bg=WIN95_GRAY)
+network_service_status_box_frame.grid(row=0, column=1, sticky="nw", pady=10)
+
+# Network File Server Name:
+network_file_server_name = tk.Label(network_service_status_box_frame, text="Current File Server: ", bg=WIN95_GRAY, font=WIN95_FONT)
+network_file_server_name.pack(anchor="w")
+
+def ping_server(server_domain):
+    url = f"https://{server_domain}"
+    try:
+        response = requests.head(url, timeout=5)
+        if response.status_code < 400:
+            print("Domain is reachable")
+            return True
+        return False
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to reach {server_domain}: {e}")
+        return False
 
 
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+network_file_server_ping_button = tk.Button(network_service_status_box_frame, text="Ping", bg=WIN95_GRAY, font=WIN95_FONT, command=ping_server("https://4pepbfihxmsc.shares.zrok.io/health"))
+network_file_server_ping_button.pack(anchor="e")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~UPLOAD TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
