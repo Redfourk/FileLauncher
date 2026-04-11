@@ -525,7 +525,8 @@ more_repo_link_desc.pack(pady=10, padx=20, fill="x")
 
 def open_github():
     webbrowser.open("https://github.com/Redfourk/FileLauncher")
-more_gh_icon = tk.PhotoImage(file="C:/Users/082096/PycharmProjects/FileLauncher/src/gui/github_icon.png", format="PNG", width=64, height=64)
+github_icon_path = str(current_dir / "github_icon.png")
+more_gh_icon = tk.PhotoImage(file=github_icon_path, format="PNG", width=64, height=64)
 
 more_link_button = tk.Button(more, image=str(more_gh_icon), command=open_github, cursor="hand2", borderwidth=0, highlightthickness=0)
 more_link_button.pack(pady=10, padx=20, anchor="w")
