@@ -56,7 +56,6 @@ def update_project():
     except Exception as e:
         print(f"An error occurred: {e}")
 
-
 if __name__ == "__main__":
     multiprocessing.freeze_support()
     update_project()

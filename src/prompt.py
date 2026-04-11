@@ -1,5 +1,6 @@
 import ctypes
 import multiprocessing
+from tabnanny import verbose
 
 
 def main():
@@ -26,7 +27,7 @@ def main():
                 creationflags=0x00000008,
                 close_fds=True,
                 start_new_session=True,
-                cwd=str(base_dir)
+                cwd=str(base_dir),
             )
             prompt.after(100, close_app)
         except Exception:
@@ -97,7 +98,8 @@ def main():
                 "activebackground": "#d9d9d9"}
 
     # GUI Button:
-    tk.Button(prompt, text="GUI", width=10, command=graphical_button_operation, **btn_opts).pack(side="left", padx=10, pady=10)
+    gui = tk.Button(prompt, text="GUI", width=10, command=graphical_button_operation, **btn_opts)
+    gui.pack(side="left", padx=10, pady=10)
 
     # CLI Button:
     tk.Button(prompt, text=strikethrough("COMMAND LINE") + " COMING SOON", width=30, command=command_line_button_operation, **btn_opts).pack(side="right", padx=10, pady=10)
@@ -107,5 +109,4 @@ def main():
 
 
 if __name__ == "__main__":
-    multiprocessing.freeze_support()
     main()

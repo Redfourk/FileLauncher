@@ -78,7 +78,7 @@ def run_google_auth():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file('client_secret.json', SCOPES)
-            creds = flow.run_local_server(port=0)
+            creds = flow.run_local_server(port=58008)
         with open('token.json', 'wb') as token:
             pickle.dump(creds, token)
     return creds
@@ -413,6 +413,7 @@ def ping_server(server_domain):
     try:
         response = requests.head(url, timeout=5)
         if response.status_code < 400:
+            print(response.status_code)
             print("Domain is reachable")
             return True
         return False
@@ -422,7 +423,7 @@ def ping_server(server_domain):
 
 
 
-network_file_server_ping_button = tk.Button(network_service_status_box_frame, text="Ping", bg=WIN95_GRAY, font=WIN95_FONT, command=ping_server("https://4pepbfihxmsc.shares.zrok.io/health"))
+network_file_server_ping_button = tk.Button(network_service_status_box_frame, text="Ping", bg=WIN95_GRAY, font=WIN95_FONT, command=ping_server("4pepbfihxmsc.shares.zrok.io/health:58008"))
 network_file_server_ping_button.pack(anchor="e")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -524,9 +525,9 @@ more_repo_link_desc.pack(pady=10, padx=20, fill="x")
 
 def open_github():
     webbrowser.open("https://github.com/Redfourk/FileLauncher")
-more_gh_icon = tk.PhotoImage(file="github_icon.png")
+more_gh_icon = tk.PhotoImage(file="C:/Users/082096/PycharmProjects/FileLauncher/src/gui/github_icon.png", format="PNG", width=64, height=64)
 
-more_link_button = tk.Button(more, image=more_gh_icon, command=open_github, cursor="hand2", borderwidth=0, highlightthickness=0)
+more_link_button = tk.Button(more, image=str(more_gh_icon), command=open_github, cursor="hand2", borderwidth=0, highlightthickness=0)
 more_link_button.pack(pady=10, padx=20, anchor="w")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
