@@ -24,7 +24,7 @@ from pathlib import Path
 from PIL import Image
 
 # Project Versioning:
-project_version = "0.1.0-test.2"
+project_version = "0.1.0-test.3"
 update_status = "You're on the latest version!"
 
 root = tk.Tk()

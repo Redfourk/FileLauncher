@@ -13,7 +13,7 @@ import sys
 # --- CONFIGURATION ---
 REPO_OWNER = "Redfourk"
 REPO_NAME = "FileLauncher"
-TAG_NAME = "0.1.0-test.2"
+TAG_NAME = "0.1.0-test.3"
 
 
 ZIP_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/zipball/"
