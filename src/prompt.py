@@ -1,7 +1,14 @@
+import tkinter as tk
+import platform
+from PIL import Image, ImageTk
+import os
+system_os = platform.system()
+
 import ctypes
 import multiprocessing
 from tabnanny import verbose
 
+app_version = "-0.1.0-test.3"
 
 def main():
     import os
@@ -12,10 +19,9 @@ def main():
     if sys.platform.startswith("win"):
         myappid = 'Redfourk.FileLauncher.0.1.0.prompt'
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-    import tkinter as tk
     from tkinter import ttk
     base_dir = Path(__file__).parent.resolve()
-    icon_path = base_dir / "assets" / "FileLauncher16.ico"
+    icon_path = base_dir / "FileLauncher.ico"
 
     # GUI Execution code:
     def graphical_button_operation():
@@ -40,8 +46,25 @@ def main():
 
     # Prompt Tkinter App creation:
     prompt = tk.Tk()
-    if icon_path.exists():
-        prompt.iconbitmap(str(icon_path))
+
+    # Multi-Platform Icon Generation (just kidding, didn't add macOS Support hehe!)
+    if system_os == "Windows":
+        try:
+            prompt.iconbitmap(icon_path)
+            print(f"[FileLauncher" + app_version + "]: " + "[WINDOWS COMPAT MODE]: " + "Prompt App icon Loaded Successfully")
+        except Exception as e:
+            print(f"[FileLauncher" + app_version + "]: " + "[WINDOWS COMPAT MODE]: " + "Failed to load Prompt App Icon with Exception: {e}")
+
+    elif system_os == "Linux":
+        try:
+            img = Image.open(icon_path)
+            photo = ImageTk.PhotoImage(img)
+            prompt.wm_iconphoto(False, photo)
+            # Keep a reference to the photo object so it doesn't get garbage collected
+            prompt._icon = photo
+            print(f"[FileLauncher" + app_version + "]: " + "[LINUX COMPAT MODE]: " + "Prompt App icon loaded successfully")
+        except Exception as e:
+            print(f"[FileLauncher" + app_version + "]: " + "[LINUX COMPAT MODE]: " + "Failed to load Prompt App Icon with Exception: {e}")
     prompt.style = ttk.Style()
     prompt.style.theme_use('classic')
     prompt.title("Info")
@@ -53,16 +76,26 @@ def main():
     prompt.geometry(f"{width}x{height}+{x}+{y}")
     prompt.configure(bg="#c0c0c0")
     prompt.overrideredirect(True)
+
+    # Multiplatform "Taskbar" Support
     def show_in_taskbar(window):
-        GWL_EXSTYLE = -20
-        WS_EX_APPWINDOW = 0x00040000
-        WS_EX_TOOLWINDOW = 0x00000080
-        hwnd = ctypes.windll.user32.GetParent(window.winfo_id())
-        style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
-        style = (style & ~WS_EX_TOOLWINDOW) | WS_EX_APPWINDOW
-        ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style)
-        window.withdraw()
-        window.after(10, window.deiconify)
+        if platform.system() == "Windows":
+            try:
+                GWL_EXSTYLE = -20
+                WS_EX_APPWINDOW = 0x00040000
+                WS_EX_TOOLWINDOW = 0x00000080
+                hwnd = ctypes.windll.user32.GetParent(window.winfo_id())
+                style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+                style = (style & ~WS_EX_TOOLWINDOW) | WS_EX_APPWINDOW
+                ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style)
+                window.withdraw()
+                window.after(10, window.deiconify)
+                print(f"[FileLauncher" + app_version + "]: " + "[WINDOWS COMPAT MODE]: " + "Successfully Loaded Prompt App into Taskbar")
+            except Exception as e:
+                print(f"[FileLauncher" + app_version + "]: " + "[WINDOWS COMPAT MODE]: " + "[WARN]: Could not load Prompt App into Taskbar: {e}")
+        elif platform.system() == "Linux":
+            window.deiconify()
+            print(f"[FileLauncher" + app_version + "]: " + "[LINUX COMPAT MODE]: " + "Successfully Loaded Prompt App in side bar.")
 
     # Strikethrough Text Effect:
     def strikethrough(text):

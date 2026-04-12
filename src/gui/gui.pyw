@@ -1,4 +1,5 @@
 import ctypes
+import platform
 import sys
 import os
 import webbrowser
@@ -9,6 +10,7 @@ import requests
 from PIL import Image, ImageTk
 from io import BytesIO
 
+from prompt import app_version
 from src.gui.netman import check_adapter_status
 from check_repo import get_latest_version
 
@@ -40,24 +42,25 @@ fl = tk.Toplevel(root)
 fl.overrideredirect(True)
 
 # All the fixing of app to not work like a TopLevel cuz of the fact it has a custom style
+# Update: I added Multiplatform "Taskbar" Support
 def show_in_taskbar(window):
-    GWL_EXSTYLE = -20
-    WS_EX_APPWINDOW = 0x00040000
-    WS_EX_TOOLWINDOW = 0x00000080
-
-    # Get the handle of the window itself since it's the root now
-    hwnd = ctypes.windll.user32.GetParent(window.winfo_id())
-    if hwnd == 0:  # If it's the root, use its own ID
-        hwnd = window.winfo_id()
-
-    style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
-    style = style & ~WS_EX_TOOLWINDOW
-    style = style | WS_EX_APPWINDOW
-    ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style)
-
-    window.withdraw()
-    window.after(10, window.deiconify)
-
+    if platform.system() == "Windows":
+        try:
+            GWL_EXSTYLE = -20
+            WS_EX_APPWINDOW = 0x00040000
+            WS_EX_TOOLWINDOW = 0x00000080
+            hwnd = ctypes.windll.user32.GetParent(window.winfo_id())
+            style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+            style = (style & ~WS_EX_TOOLWINDOW) | WS_EX_APPWINDOW
+            ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style)
+            window.withdraw()
+            window.after(10, window.deiconify)
+            print(f"[FileLauncher" + app_version + "]: " + "[WINDOWS COMPAT MODE]: " + "Successfully Loaded GUI App into Taskbar")
+        except Exception as e:
+            print(f"[FileLauncher" + app_version + "]: " + "[WINDOWS COMPAT MODE]: " + "[WARN]: Could not load GUI App into Taskbar: {e}")
+    elif platform.system() == "Linux":
+        window.deiconify()
+        print(f"[FileLauncher" + app_version + "]: " + "[LINUX COMPAT MODE]: " + "Successfully Loaded GUI App in side bar.")
 
 fl.after(100, lambda: show_in_taskbar(fl))
 
@@ -97,7 +100,6 @@ def check_whitelist(email):
 
 
 current_dir = Path(__file__).parent.resolve()
-# 1. Define your assets path (adjust based on where you run this)
 assets_dir = current_dir.parent / "assets"
 
 # 2. Open each size
@@ -105,15 +107,14 @@ ico16 = Image.open(assets_dir / "FileLauncher16.ico")
 ico32 = Image.open(assets_dir / "FileLauncher32.ico")
 ico48 = Image.open(assets_dir / "FileLauncher48.ico")
 ico256 = Image.open(assets_dir / "FileLauncher256.ico")
-
-# 3. Save as a multi-resolution ICO in your main folder
 ico256.save("FileLauncher.ico", format="ICO",
             append_images=[ico48, ico32, ico16])
-
 icon_path = Path(__file__).parent.parent.parent / "src" / "gui" / "FileLauncher.ico"
+prompt_icon_image = Image.open(icon_path)
+photo = ImageTk.PhotoImage(prompt_icon_image)
+fl.wm_iconphoto(False, photo)
 
-fl.iconbitmap(str(icon_path))
-print("Master FileLauncher.ico created!")
+print("[FileLauncher" + app_version + "]: " + "Master FileLauncher.ico created!")
 
 
 fl.style = ttk.Style()
@@ -267,7 +268,18 @@ general_content_file_status.pack(pady=5, padx=20, fill="x")
 
 # Network Status Text
 
-network_status = check_adapter_status()
+# Cross Platform netman process
+try:
+    network_status = check_adapter_status()
+    if platform.system() == "Windows":
+        print(f"[FileLauncher" + app_version + "]: " + "[WINDOWS COMPAT MODE]: " + "Found Network Information")
+    elif platform.system() == "Linux":
+        print(f"[FileLauncher" + app_version + "]: " + "[LINUX COMPAT MODE]: " + "Found Network Information")
+except Exception as e:
+    if platform.system() == "Windows":
+        print(f"[FileLauncher" + app_version + "]: " + "[WINDOWS COMPAT MODE]: " + "[WARN]: " + "Could not find network Information: " + e)
+    elif platform.system() == "Linux":
+        print(f"[FileLauncher" + app_version + "]: " + "[LINUX COMPAT MODE]: " + "[WARN]: " + "Could not find network information: " + e)
 
 general_content_network_status = ttk.Label(general, text="Network Status: " + network_status, background=WIN95_GRAY, anchor="w", justify="left", font=WIN95_FONT)
 general_content_network_status.pack(pady=5, padx=20, fill="x")
