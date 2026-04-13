@@ -33,7 +33,7 @@ def main():
                 creationflags=0x00000008,
                 close_fds=True,
                 start_new_session=True,
-                cwd=str(base_dir),
+                cwd=str(base_dir)
             )
             prompt.after(100, close_app)
         except Exception:
@@ -139,7 +139,6 @@ def main():
 
 
     prompt.mainloop()
-
 
 if __name__ == "__main__":
     main()

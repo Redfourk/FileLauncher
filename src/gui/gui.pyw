@@ -4,16 +4,25 @@ import sys
 import os
 import webbrowser
 import pickle
+
+from PyInstaller.utils.conftest import script_dir
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import requests
 from PIL import Image, ImageTk
 from io import BytesIO
 
-from prompt import app_version
-from src.gui.netman import check_adapter_status
+# Altering local imports based on OS.
+if platform.system() == "Windows":
+    from src.prompt import app_version
+    from src.gui.netman import check_adapter_status
+elif platform.system() == "Linux":
+    from prompt import app_version
+    from netman import check_adapter_status
+
 from check_repo import get_latest_version
 
+# Setting an App ID for Windows.
 if sys.platform.startswith("win"):
     my_app_id = 'Redfourk.FileLauncher.0.1.0.gui'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
@@ -91,12 +100,14 @@ def run_google_auth():
 # Check if the User's account is allowlisted
 def check_whitelist(email):
     try:
-        with open("whitelist.txt", "r") as f:
+        current_dir = Path(__file__).parent.resolve()
+        src_dir = current_dir.parent.resolve()
+        base_dir = src_dir.parent.resolve()
+        with open(base_dir / "whitelist.txt", 'r') as f:
             allowed = [line.strip().lower() for line in f.readlines()]
         return email.lower() in allowed
-    except FileNotFoundError:
-        print("Security Error: whitelist.txt missing!")
-        return False
+    except Exception as e:
+        print(f"{e}")
 
 
 current_dir = Path(__file__).parent.resolve()
