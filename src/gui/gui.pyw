@@ -89,7 +89,7 @@ def run_google_auth():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file('client_secret.json', SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file('src/gui/client_secret.json', SCOPES)
             creds = flow.run_local_server(port=58008)
         with open('token.json', 'wb') as token:
             pickle.dump(creds, token)
