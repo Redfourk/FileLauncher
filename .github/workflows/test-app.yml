@@ -14,19 +14,17 @@ permissions:
 
 jobs:
   build:
-
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+        uses: actions/setup-python@v4
         with:
+          using: 'node24'
           python-version: "3.12"
       - name: Install Dependencies
         run: |
-          if (Test-Path requirements.txt) {
+          if requirements.txt {
             pip install -r requirements.txt
           }
       - name: Lint with flake8
