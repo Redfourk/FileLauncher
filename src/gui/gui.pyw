@@ -4,13 +4,12 @@ import sys
 import os
 import webbrowser
 import pickle
-
-from PyInstaller.utils.conftest import script_dir
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import requests
 from PIL import Image, ImageTk
 from io import BytesIO
+from PIL import Image, ImageTk
 
 # Altering local imports based on OS.
 if platform.system() == "Windows":
@@ -117,7 +116,6 @@ def check_whitelist(email):
 current_dir = Path(__file__).parent.resolve()
 assets_dir = current_dir.parent / "assets"
 
-# 2. Open each size
 ico16 = Image.open(assets_dir / "FileLauncher16.ico")
 ico32 = Image.open(assets_dir / "FileLauncher32.ico")
 ico48 = Image.open(assets_dir / "FileLauncher48.ico")
@@ -158,7 +156,6 @@ fl.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
 fl.configure(bg="#c0c0c0")
 
-
 TITLE_BLUE = "#000080"
 TEXT_WHITE = "#ffffff"
 WIN95_GRAY = "#c0c0c0"
@@ -167,17 +164,7 @@ title_bar = tk.Frame(fl, bg=TITLE_BLUE, height=20, relief="raised", bd=0)
 title_bar.pack(expand=False, fill="x")
 
 
-
-
-
-
-
-
-
-
-close_btn = tk.Button(title_bar, text="r", font=("Marlett", 10),  # 'r' is 'X' in Marlett font
-                      width=2, height=1, bg=WIN95_GRAY, relief="raised",
-                      borderwidth=1, command=close_app)
+close_btn = tk.Button(title_bar, text="r", font=("Marlett", 10), width=2, height=1, bg=WIN95_GRAY, relief="raised", borderwidth=1, command=close_app)
 close_btn.pack(side="right", padx=2, pady=2)
 
 
@@ -201,25 +188,13 @@ title_bar.bind("<Button-1>", start_move)
 title_bar.bind("<ButtonRelease-1>", stop_move)
 title_bar.bind("<B1-Motion>", moving)
 
-from PIL import Image, ImageTk
-
-# 1. Get the path to your 16x16 .ico asset
-# (Adjust the path to match your src/assets structure)
 assets_dir = Path(__file__).parent.resolve().parent / "assets"
 icon_path_16 = assets_dir / "FileLauncher16.ico"
-
-# 2. Open the .ico and convert it to a Tkinter-compatible image
-# We keep a reference (header_icon) so it doesn't disappear (garbage collection)
 img_open = Image.open(icon_path_16)
 header_icon = ImageTk.PhotoImage(img_open)
-
-# 3. Create the Icon Label in the Title Bar
-# Note: Win95 icons in the title bar are usually 16x16
 icon_label = tk.Label(title_bar, image=header_icon, bg=TITLE_BLUE)
-icon_label.image = header_icon # Double-check reference
-icon_label.pack(side="left", padx=(3, 2)) # 3px left margin, 2px space before text
-
-# 4. Your existing Title Label (adjusting padding to fit next to icon)
+icon_label.image = header_icon
+icon_label.pack(side="left", padx=(3, 2))
 title_label = tk.Label(title_bar, text="FileLauncher",
                        bg=TITLE_BLUE, fg=TEXT_WHITE,
                        font=("MS Sans Serif", 8, "bold"))
@@ -377,8 +352,6 @@ def update_user_tab(email, pfp_url=None):
         except Exception as e:
             print(f"PFP Error: {e}")
 
-    # Future import pfp code
-
 # Auth Button and Function
 
 # Auth Function
@@ -386,7 +359,6 @@ def handle_auth_toggle():
     user_status_text.config(text="Status: [CONNECTING...]", fg="blue")
     fl.update()
     try:
-        # 2. Call your OAuth logic (we'll define this next)
         creds = run_google_auth()
 
         if creds:
@@ -449,7 +421,6 @@ def ping_server(server_domain):
         return False
 
 
-
 network_file_server_ping_button = tk.Button(network_service_status_box_frame, text="Ping", bg=WIN95_GRAY, font=WIN95_FONT, command=ping_server("4pepbfihxmsc.shares.zrok.io/health:58008"))
 network_file_server_ping_button.pack(anchor="e")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -484,7 +455,9 @@ def show_loading_popup(task):
     popup.update()
     return popup, progress
 
+
 def process_file_with_popup():
+    global item
     source_path = filedialog.askopenfilename(parent=fl, title="Select File")
     if not source_path:
         return
@@ -515,11 +488,14 @@ def process_file_with_popup():
         popup.destroy()
         messagebox.showerror("Error", f"Upload failed: {e}", parent=fl)
 
-
 # Upload Button:
 
 upload_button = tk.Button(upload, text="Upload File", command=process_file_with_popup, font=WIN95_FONT, justify="left")
 upload_button.pack(pady=10, padx=10, anchor="w")
+
+
+# File Name and Info (working on it...):
+# upload_file_location = tk.Label(upload, text="", font=WIN95_FONT, background=WIN95_GRAY, anchor="w", justify="left")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
