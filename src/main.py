@@ -11,7 +11,7 @@ if sys.platform.startswith("win"):
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 def launch():
     current_dir = Path(__file__).parent.resolve()
-    target_script = current_dir / "prompt.py"
+    target_script = current_dir / "gui" / "gui.pyw"
     python_exe = sys.executable.lower().replace("python.exe", "pythonw.exe")
     try:
         subprocess.Popen(

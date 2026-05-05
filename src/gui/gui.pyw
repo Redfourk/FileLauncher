@@ -7,19 +7,19 @@ import pickle
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import requests
-from PIL import Image, ImageTk
 from io import BytesIO
-from PIL import Image, ImageTk
+from PIL import ImageTk
+
+# App Version:
+app_version = "-0.1.0-test.3"
 
 # Altering local imports based on OS.
 if platform.system() == "Windows":
-    from src.prompt import app_version
     from src.gui.netman import check_adapter_status
 elif platform.system() == "Linux":
-    from prompt import app_version
     from netman import check_adapter_status
 
-from check_repo import get_latest_version
+from src.updates.check_repo import get_latest_version
 
 # Setting an App ID for Windows.
 if sys.platform.startswith("win"):
@@ -114,15 +114,14 @@ def check_whitelist(email):
 
 
 current_dir = Path(__file__).parent.resolve()
-assets_dir = current_dir.parent / "assets"
+assets_dir = current_dir.parent / "assets" / "icons"
 
 ico16 = Image.open(assets_dir / "FileLauncher16.ico")
 ico32 = Image.open(assets_dir / "FileLauncher32.ico")
 ico48 = Image.open(assets_dir / "FileLauncher48.ico")
 ico256 = Image.open(assets_dir / "FileLauncher256.ico")
-ico256.save("FileLauncher.ico", format="ICO",
-            append_images=[ico48, ico32, ico16])
-icon_path = Path(__file__).parent.parent.parent / "src" / "gui" / "FileLauncher.ico"
+ico256.save(assets_dir / "FileLauncher256.ico", format="ICO", append_images=[ico256, ico48, ico32, ico16])
+icon_path = Path(__file__).parent.parent.parent / "src" / "assets" / "icons" / "FileLauncher.ico"
 prompt_icon_image = Image.open(icon_path)
 photo = ImageTk.PhotoImage(prompt_icon_image)
 fl.wm_iconphoto(False, photo)
@@ -189,7 +188,7 @@ title_bar.bind("<ButtonRelease-1>", stop_move)
 title_bar.bind("<B1-Motion>", moving)
 
 assets_dir = Path(__file__).parent.resolve().parent / "assets"
-icon_path_16 = assets_dir / "FileLauncher16.ico"
+icon_path_16 = assets_dir / "icons" / "FileLauncher16.ico"
 img_open = Image.open(icon_path_16)
 header_icon = ImageTk.PhotoImage(img_open)
 icon_label = tk.Label(title_bar, image=header_icon, bg=TITLE_BLUE)
@@ -463,7 +462,7 @@ def process_file_with_popup():
         return
     popup, bar = show_loading_popup("File Upload")
     try:
-        UPLOAD_DIR = Path(__file__).parent.resolve() / "uploads"
+        UPLOAD_DIR = current_dir.parent / "uploads"
         if UPLOAD_DIR.exists():
             try:
                 for item in UPLOAD_DIR.iterdir():
@@ -471,7 +470,7 @@ def process_file_with_popup():
                         item.unlink()
                     elif item.is_dir():
                         shutil.rmtree(item)
-                print("Uploads folder purged.")
+                        print("Uploads folder purged.")
             except Exception as e:
                 print(f"Cleanup error: {e}")
         filename = Path(source_path).name
@@ -528,7 +527,7 @@ more_repo_link_desc.pack(pady=10, padx=20, fill="x")
 
 def open_github():
     webbrowser.open("https://github.com/Redfourk/FileLauncher")
-github_icon_path = str(current_dir / "github_icon.png")
+github_icon_path = str(assets_dir / "photos" / "github_icon.png")
 more_gh_icon = tk.PhotoImage(file=github_icon_path, format="PNG", width=64, height=64)
 
 more_link_button = tk.Button(more, image=str(more_gh_icon), command=open_github, cursor="hand2", borderwidth=0, highlightthickness=0)
