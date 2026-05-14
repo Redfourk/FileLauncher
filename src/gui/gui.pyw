@@ -1,5 +1,6 @@
 import ctypes
 import platform
+import subprocess
 import sys
 import os
 import webbrowser
@@ -119,8 +120,8 @@ assets_dir = current_dir.parent / "assets" / "icons"
 ico16 = Image.open(assets_dir / "FileLauncher16.ico")
 ico32 = Image.open(assets_dir / "FileLauncher32.ico")
 ico48 = Image.open(assets_dir / "FileLauncher48.ico")
-ico256 = Image.open(assets_dir / "FileLauncher256.ico")
-ico256.save(assets_dir / "FileLauncher256.ico", format="ICO", append_images=[ico256, ico48, ico32, ico16])
+# ico256 = Image.open(assets_dir / "FileLauncher256.ico")
+# ico256.save(assets_dir / "FileLauncher256.ico", format="ICO", append_images=[ico256, ico48, ico32, ico16])
 icon_path = Path(__file__).parent.parent.parent / "src" / "assets" / "icons" / "FileLauncher.ico"
 prompt_icon_image = Image.open(icon_path)
 photo = ImageTk.PhotoImage(prompt_icon_image)
@@ -532,6 +533,75 @@ more_gh_icon = tk.PhotoImage(file=github_icon_path, format="PNG", width=64, heig
 
 more_link_button = tk.Button(more, image=str(more_gh_icon), command=open_github, cursor="hand2", borderwidth=0, highlightthickness=0)
 more_link_button.pack(pady=10, padx=20, anchor="w")
+
+# Python Packages Update Function:
+
+python_exe = ""
+
+def py_package_update():
+    requests_command = " -m pip install requests"
+    requests_results = subprocess.Popen([python_exe, str(requests_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in requests_results.stdout:
+        print(line, end='', flush=True)
+
+    return_code = str(requests_results.wait())
+    if return_code != 0:
+        print(f"\n" + app_version + "Updating failed with: " + return_code)
+
+
+    psutil_command = " -m pip install --upgrade psutil"
+    psutil_results = subprocess.Popen([python_exe, str(psutil_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in psutil_results.stdout:
+        print(line, end='', flush=True)
+
+    return_code = str(psutil_results.wait())
+    if return_code != 0:
+        print(f"\n" + app_version + "Updating failed with: " + return_code)
+
+    pillow_command = " -m pip install --upgrade PIL"
+    pillow_results = subprocess.Popen([python_exe, str(pillow_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in pillow_results.stdout:
+        print(line, end='', flush=True)
+
+    return_code = str(pillow_results.wait())
+    if return_code !=0:
+        print(f"\n" + app_version + "Updating failed with: " + return_code)
+
+
+    google_auth_oauthlib_command = " -m pip install --upgrade google-auth-oauthlib"
+    google_auth_oauthlib_results = subprocess.Popen([python_exe, str(google_auth_oauthlib_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in google_auth_oauthlib_results.stdout:
+        print(line, end='', flush=True)
+
+    return_code = str(google_auth_oauthlib_results.wait())
+    if return_code != 0:
+        print(f"\n" + app_version + "Updating failed with: " + return_code)
+
+
+    google_auth_httplib2_command = " -m pip install --upgrade google-auth-httplib2"
+    google_auth_httplib2_results = subprocess.Popen([python_exe, str(google_auth_httplib2_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in google_auth_httplib2_results.stdout:
+        print(line, end='', flush=True)
+
+    return_code = str(google_auth_httplib2_results.wait())
+    if return_code != 0:
+        print(f"\n" + app_version + "Updating failed with: " + return_code)
+
+    google_api_python_client_command = " -m pip install --upgrade google-api-python-client"
+    google_api_python_client_results = subprocess.Popen([python_exe, str(google_api_python_client_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in google_api_python_client_results.stdout:
+        print(line, end='', flush=True)
+
+    return_code = str(google_auth_oauthlib_results.wait())
+    if return_code != 0:
+        print(f"\n" + app_version + "Updating failed with: " + return_code)
+
+
+
+
+# Update Button:
+more_update_button = tk.Button(more, command=py_package_update, text="Update Python Packages", cursor="hand2", font=WIN95_FONT, background=WIN95_GRAY)
+more_update_button.pack(pady=10, padx=20, anchor="w")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
