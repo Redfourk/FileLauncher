@@ -116,16 +116,18 @@ def check_whitelist(email):
 
 current_dir = Path(__file__).parent.resolve()
 assets_dir = current_dir.parent / "assets" / "icons"
+update_dir = current_dir.parent / "updates"
 
 ico16 = Image.open(assets_dir / "FileLauncher16.ico")
 ico32 = Image.open(assets_dir / "FileLauncher32.ico")
 ico48 = Image.open(assets_dir / "FileLauncher48.ico")
 # ico256 = Image.open(assets_dir / "FileLauncher256.ico")
 # ico256.save(assets_dir / "FileLauncher256.ico", format="ICO", append_images=[ico256, ico48, ico32, ico16])
-icon_path = Path(__file__).parent.parent.parent / "src" / "assets" / "icons" / "FileLauncher.ico"
+icon_path = Path(__file__).parent.parent.parent / "src" / "gui" /  "FileLauncher.ico"
 prompt_icon_image = Image.open(icon_path)
 photo = ImageTk.PhotoImage(prompt_icon_image)
 fl.wm_iconphoto(False, photo)
+root.wm_iconphoto(False, photo)
 
 print("[FileLauncher" + app_version + "]: " + "Master FileLauncher.ico created!")
 
@@ -189,7 +191,7 @@ title_bar.bind("<ButtonRelease-1>", stop_move)
 title_bar.bind("<B1-Motion>", moving)
 
 assets_dir = Path(__file__).parent.resolve().parent / "assets"
-icon_path_16 = assets_dir / "icons" / "FileLauncher16.ico"
+icon_path_16 = assets_dir / "icons" / "FileLauncher32.ico"
 img_open = Image.open(icon_path_16)
 header_icon = ImageTk.PhotoImage(img_open)
 icon_label = tk.Label(title_bar, image=header_icon, bg=TITLE_BLUE)
@@ -531,73 +533,30 @@ def open_github():
 github_icon_path = str(assets_dir / "photos" / "github_icon.png")
 more_gh_icon = tk.PhotoImage(file=github_icon_path, format="PNG", width=64, height=64)
 
-more_link_button = tk.Button(more, image=str(more_gh_icon), command=open_github, cursor="hand2", borderwidth=0, highlightthickness=0)
+more_link_button = tk.Button(more, image=str(more_gh_icon), command=open_github, cursor="hand2", borderwidth=0, highlightthickness=0, background=WIN95_GRAY, highlightcolor=WIN95_GRAY)
 more_link_button.pack(pady=10, padx=20, anchor="w")
 
 # Python Packages Update Function:
 
-python_exe = ""
+more_pbar = ttk.Progressbar(more, mode="indeterminate", length=200)
+more_pbar.pack(pady=10, padx=20, fill="x")
+
+more_pbar_label = tk.Label(more, background=WIN95_GRAY)
+more_pbar_label.pack(pady=10, padx=20, fill="x")
+
+
 
 def py_package_update():
-    requests_command = " -m pip install requests"
-    requests_results = subprocess.Popen([python_exe, str(requests_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-    for line in requests_results.stdout:
-        print(line, end='', flush=True)
+    psfile = update_dir / "update_libs.ps1"
+    print(psfile)
+    more_pbar.start(10)
+    proc = subprocess.Popen(["powershell.exe", psfile], stdout=subprocess.PIPE)
+    proc.wait()
+    more.after(0, task_finished)
 
-    return_code = str(requests_results.wait())
-    if return_code != 0:
-        print(f"\n" + app_version + "Updating failed with: " + return_code)
-
-
-    psutil_command = " -m pip install --upgrade psutil"
-    psutil_results = subprocess.Popen([python_exe, str(psutil_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-    for line in psutil_results.stdout:
-        print(line, end='', flush=True)
-
-    return_code = str(psutil_results.wait())
-    if return_code != 0:
-        print(f"\n" + app_version + "Updating failed with: " + return_code)
-
-    pillow_command = " -m pip install --upgrade PIL"
-    pillow_results = subprocess.Popen([python_exe, str(pillow_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-    for line in pillow_results.stdout:
-        print(line, end='', flush=True)
-
-    return_code = str(pillow_results.wait())
-    if return_code !=0:
-        print(f"\n" + app_version + "Updating failed with: " + return_code)
-
-
-    google_auth_oauthlib_command = " -m pip install --upgrade google-auth-oauthlib"
-    google_auth_oauthlib_results = subprocess.Popen([python_exe, str(google_auth_oauthlib_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-    for line in google_auth_oauthlib_results.stdout:
-        print(line, end='', flush=True)
-
-    return_code = str(google_auth_oauthlib_results.wait())
-    if return_code != 0:
-        print(f"\n" + app_version + "Updating failed with: " + return_code)
-
-
-    google_auth_httplib2_command = " -m pip install --upgrade google-auth-httplib2"
-    google_auth_httplib2_results = subprocess.Popen([python_exe, str(google_auth_httplib2_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-    for line in google_auth_httplib2_results.stdout:
-        print(line, end='', flush=True)
-
-    return_code = str(google_auth_httplib2_results.wait())
-    if return_code != 0:
-        print(f"\n" + app_version + "Updating failed with: " + return_code)
-
-    google_api_python_client_command = " -m pip install --upgrade google-api-python-client"
-    google_api_python_client_results = subprocess.Popen([python_exe, str(google_api_python_client_command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-    for line in google_api_python_client_results.stdout:
-        print(line, end='', flush=True)
-
-    return_code = str(google_auth_oauthlib_results.wait())
-    if return_code != 0:
-        print(f"\n" + app_version + "Updating failed with: " + return_code)
-
-
-
+def task_finished():
+    proc.stop()
+    more_pbar.config(text="Libraries Updated")
 
 # Update Button:
 more_update_button = tk.Button(more, command=py_package_update, text="Update Python Packages", cursor="hand2", font=WIN95_FONT, background=WIN95_GRAY)

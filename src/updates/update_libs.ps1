@@ -1,3 +1,6 @@
+cd ..
+cd ..
+
 ./.venv/scripts/python.exe -m pip install --upgrade pip
 
 ./.venv/scripts/python.exe -m pip install --upgrade requests
