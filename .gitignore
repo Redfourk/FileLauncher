@@ -1,5 +1,6 @@
-src/gui/client_secret.json
-src/gui/token.json
+src/FileLauncher_Redfourk
+/gui/client_secret.json
+src/FileLauncher_Redfourk/gui/token.json
 whitelist.txt
 __pycache__/
 *.pyc

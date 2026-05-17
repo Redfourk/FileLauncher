@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+
+
+[project]
+name = "FileLauncher_Redfourk"
+version = "0.1.0.dev4"
+authors = [
+  {name="Redfourk"},
+    {name="1997MazdaMX5Miata"},
+]
+
+dependencies = [
+    "requests==2.33.0",
+    "psutil==7.2.2",
+    "Pillow==12.2.0",
+    "google-auth-oauthlib==1.3.1",
+    "google-auth-httplib2==0.3.1",
+    "google-api-python-client==2.194.0",
+]
+
+
+description = "The simple, easy-to-use, File-Launching, file transfer utility!"
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Windows",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+license = "AGPL-3.0-only"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/Redfourk/FileLauncher"
+Issues = "https://github.com/Redfourk/FileLauncher/issues"
+Releases = "https://github.com/Redfourk/FileLauncher/releases"
+Documentation = "https://github.com/Redfourk/FileLauncher/blob/package/README.md"
+
+[project.gui-scripts]
+launch = "main:main"
+
+[tool.setuptools.package-data]
+"FileLauncher_Redfourk" = ["assets/icons/*.ico", "assets/photos/*.png", "gui/*.ico"]
