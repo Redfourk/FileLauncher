@@ -127,7 +127,8 @@ icon_path = Path(__file__).parent.parent.parent / "src" / "gui" /  "FileLauncher
 prompt_icon_image = Image.open(icon_path)
 photo = ImageTk.PhotoImage(prompt_icon_image)
 fl.wm_iconphoto(False, photo)
-root.wm_iconphoto(False, photo)
+root.wm_iconphoto(
+    False, photo)
 
 print("[FileLauncher" + app_version + "]: " + "Master FileLauncher.ico created!")
 
@@ -285,33 +286,72 @@ general_content_progress_bar_text = ttk.Label(general, text=process_name, backgr
 general_content_progress_bar_text.pack(pady=5, padx=20, fill="x")
 
 # Visual Bar:
-general_content_progress_bar = ttk.Progressbar(general, orient="horizontal", length=300, mode="determinate")
-general_content_progress_bar.pack(pady=5, padx=10, anchor="w")
+# general_content_progress_bar = ttk.Progressbar(general, orient="horizontal", length=300, mode="determinate")
+# general_content_progress_bar.pack(pady=5, padx=10, anchor="w")
 
 # Progress Bar Test Task:
-def start_task():
-    general_content_progress_bar['value'] = 0
-    process_name = "Test Process:"
-    general_content_progress_bar_text.config(text=process_name)
-    for i in range(5):
-        time.sleep(1)
-        general_content_progress_bar['value'] += 20
-        general.update_idletasks()
-    time.sleep(1)
-    process_name = " "
-    general_content_progress_bar_text.config(text=process_name)
+# def start_task():
+#     general_content_progress_bar['value'] = 0
+#     process_name = "Test Process:"
+#     general_content_progress_bar_text.config(text=process_name)
+#     for i in range(5):
+#         time.sleep(1)
+#         general_content_progress_bar['value'] += 20
+#         general.update_idletasks()
+#     time.sleep(1)
+#     process_name = " "
+#     general_content_progress_bar_text.config(text=process_name)
+
+# Catapult Animations:
+
+# Texture Directory Mappings:
+textures_path = assets_dir / "photos"
+
+catapult_pos1_empty = str(textures_path / "pos1_empty.png")
+catapult_pos2_empty = str(textures_path / "pos2_empty.png")
+catapult_pos3_empty = str(textures_path / "pos3_empty.png")
+catapult_pos4_empty = str(textures_path / "pos4_empty.png")
+
+catapult_pos1_loaded = str(textures_path / "pos1_loaded.png")
+catapult_pos2_loaded = str(textures_path / "pos2_loaded.png")
+catapult_pos3_loaded = str(textures_path / "pos3_loaded.png")
+catapult_pos4_loaded = str(textures_path / "pos4_loaded.png")
+
+uploads_dir = current_dir.parent / "uploads"
+
+image_catapult_pos1_empty = tk.PhotoImage(file=catapult_pos1_empty)
+# Initial Texture Load:
+general_catapult = tk.Label(general, image=image_catapult_pos1_empty, padx=20, pady=50, justify="right", background=WIN95_GRAY         )
+general_catapult.pack(padx=5, pady=5)
 
 
+# Files in Uploads Directory check:
+def are_there_files_ready(y_or_n):
+    if any(uploads_dir.iterdir()):
+        general_catapult.configure(image=catapult_pos1_loaded)
+        return True
+    else:
+        return False
+
+
+
+
+
+# (To be repurposed for the launch button) VVV
 # Progress Bar Test Button:
-btn = tk.Button(general, text="Test Pbar", command=start_task)
-btn.pack()
+# btn = tk.Button(general, text="Test Pbar", command=start_task)
+# btn.pack()
+
+
+
+
 
 def close_app():
     fl.destroy()
     root.destroy()
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER TAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # User Tab Title
 user_content_title = ttk.Label(user, background=WIN95_GRAY, text="User Profile: ", anchor="w", justify="left", font=WIN95_BOLD_FONT)
