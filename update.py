@@ -13,7 +13,7 @@ import sys
 # --- CONFIGURATION ---
 REPO_OWNER = "Redfourk"
 REPO_NAME = "FileLauncher"
-TAG_NAME = "0.1.0-test.4"
+TAG_NAME = "0.1.0-test.5"
 
 
 ZIP_URL = f"https://codeload.github.com/{REPO_OWNER}/{REPO_NAME}/zip/refs/tags/{TAG_NAME}"

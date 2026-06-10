@@ -12,7 +12,7 @@ from io import BytesIO
 from PIL import ImageTk
 
 # App Version:
-app_version = ("-0.1.0-test.4")
+app_version = ("-0.1.0-test.5")
 
 # Altering local imports based on OS.
 if platform.system() == "Windows":
@@ -35,7 +35,7 @@ from pathlib import Path
 from PIL import Image
 
 # Project Versioning:
-project_version = "0.1.0-test.4"
+project_version = "0.1.0-test.5"
 update_status = "You're on the latest version!"
 
 root = tk.Tk()
@@ -512,6 +512,26 @@ more_content_title.pack(pady=10, padx=20, fill="x")
 more_project_version = ttk.Label(more, background=WIN95_GRAY, text="Current App Version:    " + project_version, anchor="w", justify="left", font=WIN95_FONT)
 more_project_version.pack(pady=10, padx=20, fill="x")
 
+# Check for latest update logic
+def check_for_updates_and_toggle_button():
+    try:
+        repo_version = get_latest_version("Redfourk", "FileLauncher")
+        if repo_version > project_version:
+            update_status = f"There is a new version available.\nYou have {project_version} and the newest version is {repo_version}"
+            more_update_ability.config(text="Updates Status:   " + update_status)
+            more_update_button.config(state="normal")
+        else:
+            update_status = f"You are on the latest version! ({project_version})"
+            more_update_ability.config(text="Updates Status:   " + update_status)
+            more_update_button.config(state="disabled")
+    except Exception as e:
+        more_update_ability.config(text="Updates Status:   Could not check for updates!")
+        more_update_button.config(state="normal")
+
+
+
+
+
 # Updates Avaliable:
 
 repo_version = get_latest_version("Redfourk", "FileLauncher")
@@ -521,7 +541,7 @@ if repo_version > project_version:
 elif repo_version == project_version:
     update_status = "You are on the latest version! (" + project_version + ")"
 
-more_update_ability = ttk.Label(more, background=WIN95_GRAY, text="Updates Status:   " + update_status, anchor="w", justify="left", font=WIN95_BOLD_FONT)
+more_update_ability = ttk.Label(more, background=WIN95_GRAY, text="Updates Status:   Checking...", anchor="w", justify="left", font=WIN95_BOLD_FONT)
 more_update_ability.pack(pady=10, padx=20, fill="x")
 
 # Repo Link:
@@ -536,31 +556,86 @@ more_gh_icon = tk.PhotoImage(file=github_icon_path, format="PNG", width=64, heig
 more_link_button = tk.Button(more, image=str(more_gh_icon), command=open_github, cursor="hand2", borderwidth=0, highlightthickness=0, background=WIN95_GRAY, highlightcolor=WIN95_GRAY)
 more_link_button.pack(pady=10, padx=20, anchor="w")
 
-# Python Packages Update Function:
+# Logic Put on hold for System Update Logic:
 
-more_pbar = ttk.Progressbar(more, mode="indeterminate", length=200)
-more_pbar.pack(pady=10, padx=20, fill="x")
+# # Python Packages Update Function:
+#
+# more_pbar = ttk.Progressbar(more, mode="indeterminate", length=200)
+# more_pbar.pack(pady=10, padx=20, fill="x")
+#
+# more_pbar_label = tk.Label(more, background=WIN95_GRAY)
+# more_pbar_label.pack(pady=10, padx=20, fill="x")
+#
 
-more_pbar_label = tk.Label(more, background=WIN95_GRAY)
-more_pbar_label.pack(pady=10, padx=20, fill="x")
+#
+# def py_package_update():
+#     psfile = update_dir / "update_libs.ps1"
+#     print(psfile)
+#     more_pbar.start(10)
+#     proc = subprocess.Popen(["powershell.exe", psfile], stdout=subprocess.PIPE)
+#     proc.wait()
+#     more.after(0, task_finished)
+#
+# def task_finished():
+#     proc.stop()
+#     more_pbar.config(text="Libraries Updated")
+#
 
 
+# System Update Logic:
+def trigger_system_update():
+    # Obliterate Current App Instance
+    fl.destroy()
+    root.destroy()
 
-def py_package_update():
-    psfile = update_dir / "update_libs.ps1"
-    print(psfile)
-    more_pbar.start(10)
-    proc = subprocess.Popen(["powershell.exe", psfile], stdout=subprocess.PIPE)
-    proc.wait()
-    more.after(0, task_finished)
+    # Launch Update Popup
+    updater_popup = tk.Tk()
+    updater_popup.overrideredirect(True)
+    updater_popup.configure(background='#c0c0c0', bd=2, relief="raised")
+    w = 300
+    h = 100
+    x = (updater_popup.winfo_screenwidth() // 2) - (w // 2)
+    y = (updater_popup.winfo_screenheight() // 2) - (h // 2)
+    updater_popup.geometry(f"{w}x{h}+{x}+{y}")
+    fake_title = tk.Frame(updater_popup, bg="#000080", height=20)
+    fake_title.pack(fill="x")
+    tk.Label(fake_title, text="System Update", bg="#000080", fg="white", font=("MS Sans Serif", 8, "bold")).pack(side="left", padx=5)
 
-def task_finished():
-    proc.stop()
-    more_pbar.config(text="Libraries Updated")
+    # Indeterminate Progress Bar Logic
+    tk.Label(updater_popup, text="Applying updates, please wait...", bg="#c0c0c0", font=("MS Sans Serif", 8)).pack(pady=10)
+    progress = ttk.Progressbar(updater_popup, orient="horizontal", length=250, mode="indeterminate")
+    progress.pack(pady=5)
+    progress.start(10)
+
+    updater_popup.update()
+
+    try:
+        current_file_dir = Path(__file__).parent.resolve()
+        root_dir = current_file_dir.parent.parent.resolve()
+        updater_script = root_dir / "update.py"
+
+        process = subprocess.Popen([sys.executable, str(updater_script)])
+
+        while process.poll() is None:
+            updater_popup.update()
+            time.sleep(0.1)
+    except Exception as e:
+        print(f"Failed to run update.py: {e}")
+
+    updater_popup.destroy()
+    sys.exit(0)
 
 # Update Button:
-more_update_button = tk.Button(more, command=py_package_update, text="Update Python Packages", cursor="hand2", font=WIN95_FONT, background=WIN95_GRAY)
+more_update_button = tk.Button(more, command=trigger_system_update, text="Update Application", cursor="hand2", font=WIN95_FONT, background=WIN95_GRAY)
 more_update_button.pack(pady=10, padx=20, anchor="w")
+
+fl.after(100, check_for_updates_and_toggle_button)
+
+
+
+
+
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
