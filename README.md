@@ -16,16 +16,16 @@ FileLauncher was designed to provide a purely-Python*, cross-platform, file tran
 
 ❌ - Not Planned
 
-| Status | Feature                                                       |
-|--------|---------------------------------------------------------------|
-| ❌      | Support Below Python 3.12                                     |
-| ❌      | CLI Functionality                                             |
-| ✅      | Graphical Interface Functionality                             |
-| 🚧     | Cross-Platform Support                                        |
-| 🚧     | Google Authentication (working, just needs to be implemented) |
-| 🚧     | File Transfer API Services                                    |
-| 🚧     | Update Functionality within the app                           |
-| ✅     | Insanely cool icon! (Credit: [@1997MazdaMX5Miata](https://github.com/1997MazdaMX5Miata/))
+| Status | Feature                                                                                   |
+|--------|-------------------------------------------------------------------------------------------|
+| ❌      | Support Below Python 3.12                                                                 |
+| ❌      | CLI Functionality                                                                         |
+| ✅      | Graphical Interface Functionality                                                         |
+| 🚧     | Cross-Platform Support                                                                    |
+| 🚧     | Google Authentication (working, just needs to be implemented)                             |
+| 🚧     | File Transfer API Services                                                                |
+| 🚧     | Update Functionality within the app                                                       |
+| ✅      | Insanely cool icon! (Credit: [@1997MazdaMX5Miata](https://github.com/1997MazdaMX5Miata/)) |
 
 Stay tuned to see how this table changes :)
 

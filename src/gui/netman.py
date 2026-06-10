@@ -2,7 +2,7 @@ import platform
 import psutil
 
 # Added Ethernet Compatibility. (#2) @3/6/26
-# Added Cross-Platform Compatability. @4/12/26
+# Added Cross-Platform Compatibility. @4/12/26
 
 def check_adapter_status():
     system_os = platform.system()

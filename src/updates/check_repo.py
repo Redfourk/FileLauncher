@@ -5,5 +5,7 @@ def get_latest_version(repo_owner, repo_name):
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()["tag_name"]
+    if response.status_code == 404:
+        return "Page is unreachable."
     return None
 

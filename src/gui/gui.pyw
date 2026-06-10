@@ -12,7 +12,7 @@ from io import BytesIO
 from PIL import ImageTk
 
 # App Version:
-app_version = "-0.1.0-test.3"
+app_version = ("-0.1.0-test.4")
 
 # Altering local imports based on OS.
 if platform.system() == "Windows":
@@ -35,7 +35,7 @@ from pathlib import Path
 from PIL import Image
 
 # Project Versioning:
-project_version = "0.1.0-test.3"
+project_version = "0.1.0-test.4"
 update_status = "You're on the latest version!"
 
 root = tk.Tk()
